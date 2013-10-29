@@ -750,12 +750,6 @@ jboolean android_os_Process_parseProcLineArray(JNIEnv* env, jobject clazz,
             }
             end = i;
             i++;
-        } else if ((mode&PROC_QUOTES) != 0) {
-            while (buffer[i] != '"' && i < endIndex) {
-                i++;
-            }
-            end = i;
-            i++;
         }
         while (i < endIndex && buffer[i] != term) {
             i++;

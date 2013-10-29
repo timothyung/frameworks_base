@@ -675,7 +675,7 @@ const ResTable* AssetManager::getResTable(bool required) const
                             mZipSet.setZipResourceTableAsset(ap.path, ass);
                     }
                 }
-                
+
                 if (i == 0 && ass != NULL) {
                     // If this is the first resource table in the asset
                     // manager, then we are going to cache it so that we
@@ -689,7 +689,7 @@ const ResTable* AssetManager::getResTable(bool required) const
             }
         } else {
             ALOGV("loading resource table %s\n", ap.path.string());
-            Asset* ass = const_cast<AssetManager*>(this)->
+            ass = const_cast<AssetManager*>(this)->
                 openNonAssetInPathLocked("resources.arsc",
                                          Asset::ACCESS_BUFFER,
                                          ap);
