@@ -375,6 +375,13 @@ class QuickSettings {
                 showBrightnessDialog();
             }
         });
+        brightnessTile.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                startSettingsActivity(android.provider.Settings.ACTION_DISPLAY_SETTINGS);
+                return true;
+            }
+        });
         mModel.addBrightnessTile(brightnessTile,
                 new QuickSettingsModel.BasicRefreshCallback(brightnessTile));
         parent.addView(brightnessTile);
