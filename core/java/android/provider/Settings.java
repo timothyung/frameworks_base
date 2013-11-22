@@ -2654,7 +2654,7 @@ public final class Settings {
         * @hide
         */
         public static final String POWERMENU_TORCH_PREFS = "powermenu_torch_prefs";
-		
+
         /** 
          * Whether to enable quiet hours.
          * @hide
@@ -2730,7 +2730,7 @@ public final class Settings {
          * @hide
          */
         public static final String GLOBAL_IMMERSIVE_MODE_STYLE = "global_immersive_mode_style";
-		
+
 		/**
          * Should the non-intrsive incall ui be used	
 		 *
@@ -2744,7 +2744,7 @@ public final class Settings {
          * @hide
          */
         public static final String QS_QUICK_PULLDOWN = "qs_quick_pulldown";
-		
+
 		/**
          * Show or hide clock
          * 0 - hide
@@ -2800,6 +2800,12 @@ public final class Settings {
         * Stores the java DateFormat string for the date
         */
         public static final String STATUSBAR_CLOCK_DATE_FORMAT = "statusbar_clock_date_format";
+		
+		/**
+         * Setting to show the battery percentage text
+         * @hide
+         */
+        public static final String STATUS_BAR_BATTERY_STYLE = "status_bar_battery_style";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
