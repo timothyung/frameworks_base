@@ -470,48 +470,6 @@ class QuickSettings {
             parent.addView(rssiTile);
         }
 
-        // Rotation Lock
-        if (mContext.getResources().getBoolean(R.bool.quick_settings_show_rotation_lock)
-                || DEBUG_GONE_TILES) {
-            final QuickSettingsBasicTile rotationLockTile
-                    = new QuickSettingsBasicTile(mContext);
-            rotationLockTile.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final boolean locked = mRotationLockController.isRotationLocked();
-                    mRotationLockController.setRotationLocked(!locked);
-                }
-            });
-            if (LONG_PRESS_TOGGLES) {
-                rotationLockTile.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        startSettingsActivity(android.provider.Settings.ACTION_DISPLAY_SETTINGS);
-                        return true;
-                    }
-                });
-            }
-            mModel.addRotationLockTile(rotationLockTile, mRotationLockController,
-                    new QuickSettingsModel.RefreshCallback() {
-                        @Override
-                        public void refreshView(QuickSettingsTileView view, State state) {
-                            QuickSettingsModel.RotationLockState rotationLockState =
-                                    (QuickSettingsModel.RotationLockState) state;
-                            view.setVisibility(rotationLockState.visible
-                                    ? View.VISIBLE : View.GONE);
-                            if (state.iconId != 0) {
-                                // needed to flush any cached IDs
-                                rotationLockTile.setImageDrawable(null);
-                                rotationLockTile.setImageResource(state.iconId);
-                            }
-                            if (state.label != null) {
-                                rotationLockTile.setText(state.label);
-                            }
-                        }
-                    });
-            parent.addView(rotationLockTile);
-        }
-
         // Battery
         final QuickSettingsTileView batteryTile = (QuickSettingsTileView)
                 inflater.inflate(R.layout.quick_settings_tile, parent, false);
@@ -613,6 +571,48 @@ class QuickSettings {
                 }
             });
             parent.addView(bluetoothTile);
+        }
+
+        // Rotation Lock
+        if (mContext.getResources().getBoolean(R.bool.quick_settings_show_rotation_lock)
+                || DEBUG_GONE_TILES) {
+            final QuickSettingsBasicTile rotationLockTile
+                    = new QuickSettingsBasicTile(mContext);
+            rotationLockTile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final boolean locked = mRotationLockController.isRotationLocked();
+                    mRotationLockController.setRotationLocked(!locked);
+                }
+            });
+            if (LONG_PRESS_TOGGLES) {
+                rotationLockTile.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        startSettingsActivity(android.provider.Settings.ACTION_DISPLAY_SETTINGS);
+                        return true;
+                    }
+                });
+            }
+            mModel.addRotationLockTile(rotationLockTile, mRotationLockController,
+                    new QuickSettingsModel.RefreshCallback() {
+                        @Override
+                        public void refreshView(QuickSettingsTileView view, State state) {
+                            QuickSettingsModel.RotationLockState rotationLockState =
+                                    (QuickSettingsModel.RotationLockState) state;
+                            view.setVisibility(rotationLockState.visible
+                                    ? View.VISIBLE : View.GONE);
+                            if (state.iconId != 0) {
+                                // needed to flush any cached IDs
+                                rotationLockTile.setImageDrawable(null);
+                                rotationLockTile.setImageResource(state.iconId);
+                            }
+                            if (state.label != null) {
+                                rotationLockTile.setText(state.label);
+                            }
+                        }
+                    });
+            parent.addView(rotationLockTile);
         }
 
         // Location
