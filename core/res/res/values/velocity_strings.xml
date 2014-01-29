@@ -27,5 +27,5 @@
     <string name="global_action_reboot">Reboot</string>
 
     <!-- kill app long press back -->
-    <string name="app_killed_message">Application killed. Happy now?</string>
+    <string name="app_killed_message">App exterminated with maximum velocity</string>
 </resources>
