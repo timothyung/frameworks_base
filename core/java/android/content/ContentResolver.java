@@ -946,6 +946,7 @@ public abstract class ContentResolver {
                         stableProvider = acquireProvider(uri);
                     }
                     releaseUnstableProvider(unstableProvider);
+                    unstableProvider = null;
                     ParcelFileDescriptor pfd = new ParcelFileDescriptorInner(
                             fd.getParcelFileDescriptor(), stableProvider);
 
@@ -1087,6 +1088,7 @@ public abstract class ContentResolver {
                 stableProvider = acquireProvider(uri);
             }
             releaseUnstableProvider(unstableProvider);
+            unstableProvider = null;
             ParcelFileDescriptor pfd = new ParcelFileDescriptorInner(
                     fd.getParcelFileDescriptor(), stableProvider);
 
