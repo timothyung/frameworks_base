@@ -2614,6 +2614,106 @@ public final class Settings {
         public static final String VOLUME_KEYS_CONTROL_RING_STREAM = "volume_keys_control_ring_stream";
 
         /**
+        * When to show Reboot in Powermenu
+        * @hide
+        */
+        public static final String POWERMENU_REBOOT_PREFS = "powermenu_reboot_prefs";
+
+        /**
+        * When to show Shutdown in Powermenu
+        * @hide
+        */
+        public static final String POWERMENU_SHUTDOWN_PREFS = "powermenu_shutdown_prefs";
+
+        /**
+        * When to show Shutdown in Powermenu
+        * @hide
+        */
+        public static final String POWERMENU_AIRPLANEMODE_PREFS = "powermenu_airplanemode_prefs";
+
+        /**
+        * When to show Shutdown in Powermenu
+        * @hide
+        */
+        public static final String POWERMENU_SILENTMODE_PREFS = "powermenu_silentmode_prefs";
+
+        /**
+        * When to show Shutdown in Powermenu
+        * @hide
+        */
+        public static final String POWERMENU_USERSWITCH_PREFS = "powermenu_userswitch_prefs";
+
+        /**
+        * When to show Shutdown in Powermenu
+        * @hide
+        */
+        public static final String POWERMENU_SCREENSHOT_PREFS = "powermenu_screenshot_prefs";
+
+        /**
+        * When to show Shutdown in Powermenu
+        * @hide
+        */
+        public static final String POWERMENU_TORCH_PREFS = "powermenu_torch_prefs";
+		
+        /** 
+         * Whether to enable quiet hours.
+         * @hide
+         */
+        public static final String QUIET_HOURS_ENABLED = "quiet_hours_enabled";
+
+        /**
+         * Sets when quiet hours starts. This is stored in minutes from the start of the day.
+         * @hide
+         */
+        public static final String QUIET_HOURS_START = "quiet_hours_start";
+
+        /**
+         * Sets when quiet hours end. This is stored in minutes from the start of the day.
+         * @hide
+         */
+        public static final String QUIET_HOURS_END = "quiet_hours_end";
+
+        /**
+         * Whether to remove the sound from outgoing notifications during quiet hours.
+         * @hide
+         */
+        public static final String QUIET_HOURS_MUTE = "quiet_hours_mute";
+
+        /**
+         * Whether to disable haptic feedback during quiet hours.
+         * @hide
+         */
+        public static final String QUIET_HOURS_HAPTIC = "quiet_hours_haptic";
+
+        /**
+         * Whether to remove the vibration from outgoing notifications during quiet hours.
+         * @hide
+         */
+        public static final String QUIET_HOURS_STILL = "quiet_hours_still";
+
+        /**
+         * Whether to attempt to dim the LED color during quiet hours.
+         * @hide
+         */
+        public static final String QUIET_HOURS_DIM = "quiet_hours_dim";
+
+        /**
+         * Height of navigation bar buttons
+         * @hide
+         */
+        public static final String NAVIGATION_BAR_HEIGHT = "navigation_bar_height";
+
+        /** 
+         * Electronic beam animation mode
+         * 0 = off,
+         * 1 = always horizontal,
+         * 2 = always vertical,
+         * 3 = dependent on orientation
+         * @hide
+         */
+        public static final String SYSTEM_POWER_CRT_MODE = "system_power_crt_mode";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
