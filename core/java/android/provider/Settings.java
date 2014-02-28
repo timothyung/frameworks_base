@@ -2730,6 +2730,13 @@ public final class Settings {
          * @hide
          */
         public static final String GLOBAL_IMMERSIVE_MODE_STYLE = "global_immersive_mode_style";
+		
+		/**
+         * Should the non-intrsive incall ui be used	
+		 *
+	     * @hide	
+	     */	
+	    public static final String NON_INTRUSIVE_INCALL = "non_intrusive_incall";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
