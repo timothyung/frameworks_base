@@ -2713,6 +2713,31 @@ public final class Settings {
          */
         public static final String SYSTEM_POWER_CRT_MODE = "system_power_crt_mode";
 
+	/**
+         * Whether power menu expanded desktop is enabled
+         * @hide
+         */
+        public static final String POWER_MENU_EXPANDED_DESKTOP_ENABLED = "power_menu_expanded_desktop_enabled";
+
+	/**
+         * Expanded desktop on/off state
+         * @hide
+         */
+        public static final String EXPANDED_DESKTOP_STATE = "expanded_desktop_state";
+
+        /** @hide */
+        public static final int EXPANDED_DESKTOP_DISABLED = 0;
+        /** @hide */
+        public static final int EXPANDED_DESKTOP_STATUS_BAR_VISIBLE = 1;
+        /** @hide */
+        public static final int EXPANDED_DESKTOP_STATUS_BAR_HIDDEN = 2;
+
+        /**
+         * Expanded desktop style (with status bar or without status bar)
+         * @hide
+         */
+        public static final String EXPANDED_DESKTOP_STYLE = "expanded_desktop_style";
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
