@@ -31,6 +31,8 @@
   <java-symbol type="drawable" name="ic_lock_screenshot" />
   <java-symbol type="drawable" name="ic_qs_torch_on" />
   <java-symbol type="drawable" name="ic_qs_torch_off" />
+  <java-symbol type="drawable" name="ic_lock_immersive_mode_on" />
+  <java-symbol type="drawable" name="ic_lock_immersive_mode_off" />
 
   <java-symbol type="string" name="global_action_reboot" />
   <java-symbol type="string" name="global_actions" />
@@ -55,8 +57,8 @@
   <java-symbol type="drawable" name="ic_lock_expanded_desktop" /> 
 
   <!-- Expanded Desktop -->
-  <java-symbol type="string" name="global_actions_toggle_expanded_desktop_mode" />
-  <java-symbol type="string" name="global_actions_expanded_desktop_mode_off_status" />
-  <java-symbol type="string" name="global_actions_expanded_desktop_mode_on_status" />
+  <java-symbol type="string" name="global_actions_toggle_global_immersive_mode" />
+  <java-symbol type="string" name="global_actions_global_immersive_mode_off_status" />
+  <java-symbol type="string" name="global_actions_global_immersive_mode_on_status" />
 
 </resources>

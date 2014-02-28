@@ -2717,26 +2717,19 @@ public final class Settings {
          * Whether power menu expanded desktop is enabled
          * @hide
          */
-        public static final String POWER_MENU_EXPANDED_DESKTOP_ENABLED = "power_menu_expanded_desktop_enabled";
+        public static final String POWER_MENU_GLOBAL_IMMERSIVE_MODE_ENABLED = "power_menu_global_immersive_mode_enabled";
 
 	/**
-         * Expanded desktop on/off state
+         * Global immersive mode on/off state
          * @hide
          */
-        public static final String EXPANDED_DESKTOP_STATE = "expanded_desktop_state";
-
-        /** @hide */
-        public static final int EXPANDED_DESKTOP_DISABLED = 0;
-        /** @hide */
-        public static final int EXPANDED_DESKTOP_STATUS_BAR_VISIBLE = 1;
-        /** @hide */
-        public static final int EXPANDED_DESKTOP_STATUS_BAR_HIDDEN = 2;
+        public static final String GLOBAL_IMMERSIVE_MODE_STATE = "global_immersive_mode_state";
 
         /**
-         * Expanded desktop style (with status bar or without status bar)
+         * Global immersive mode style (with status bar or without status bar)
          * @hide
          */
-        public static final String EXPANDED_DESKTOP_STYLE = "expanded_desktop_style";
+        public static final String GLOBAL_IMMERSIVE_MODE_STYLE = "global_immersive_mode_style";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings

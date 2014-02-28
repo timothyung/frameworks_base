@@ -400,6 +400,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mHideLockScreen;
     boolean mForcingShowNavBar;
     int mForcingShowNavBarLayer;
+	
+	int mGlobalImmersiveModeStyle = -1;
 
     // States of keyguard dismiss.
     private static final int DISMISS_KEYGUARD_NONE = 0; // Keyguard not being dismissed.
@@ -568,7 +570,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.System.NAVIGATION_BAR_HEIGHT), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.EXPANDED_DESKTOP_STATE), false, this,
+                    Settings.System.GLOBAL_IMMERSIVE_MODE_STATE), false, this,
+                    UserHandle.USER_ALL);
+      resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.GLOBAL_IMMERSIVE_MODE_STYLE), false, this,
                     UserHandle.USER_ALL);
             updateSettings();
         }
@@ -1207,7 +1212,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     public void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
-        boolean updateRotation = false;
+        boolean updateRotation = false, updateVisibility = false;
         synchronized (mLock) {
             mEndcallBehavior = Settings.System.getIntForUser(resolver,
                     Settings.System.END_BUTTON_BEHAVIOR,
@@ -1232,6 +1237,18 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mNavigationBarWidthForRotation[mLandscapeRotation] =
             mNavigationBarWidthForRotation[mSeascapeRotation] =
                 (mNavigationBarHeight - 6) * DisplayMetrics.DENSITY_DEVICE/DisplayMetrics.DENSITY_DEFAULT;
+				
+			int immersiveModeStyle = Settings.System.getIntForUser(resolver,
+                    Settings.System.GLOBAL_IMMERSIVE_MODE_STYLE, 0, UserHandle.USER_CURRENT);
+            if (Settings.System.getIntForUser(resolver,
+                        Settings.System.GLOBAL_IMMERSIVE_MODE_STATE, 0, UserHandle.USER_CURRENT) == 0) {
+                immersiveModeStyle = 0;
+            }
+
+            if (mGlobalImmersiveModeStyle != immersiveModeStyle) {
+                mGlobalImmersiveModeStyle = immersiveModeStyle;
+                updateVisibility = true;
+            }  
 
             // Configure rotation lock.
             int userRotation = Settings.System.getIntForUser(resolver,
@@ -1621,7 +1638,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     public int getNonDecorDisplayWidth(int fullWidth, int fullHeight, int rotation) {
-        if (mHasNavigationBar) {
+        if (mHasNavigationBar && !immersiveModeHidesNavigationBar()) {
             // For a basic navigation bar, when we are in landscape mode we place
             // the navigation bar to the side.
             if (mNavigationBarCanMove && fullWidth > fullHeight) {
@@ -1632,7 +1649,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     public int getNonDecorDisplayHeight(int fullWidth, int fullHeight, int rotation) {
-        if (mHasNavigationBar) {
+        if (mHasNavigationBar && !immersiveModeHidesNavigationBar()) {
             // For a basic navigation bar, when we are in portrait mode we place
             // the navigation bar to the bottom.
             if (!mNavigationBarCanMove || fullWidth < fullHeight) {
@@ -2842,8 +2859,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             // For purposes of positioning and showing the nav bar, if we have
             // decided that it can't be hidden (because of the screen aspect ratio),
             // then take that into account.
-            navVisible |= !mCanHideNavigationBar;
-            navVisible &= (Settings.System.getInt(mContext.getContentResolver(), Settings.System.EXPANDED_DESKTOP_STATE, 0) == 0);
+            navVisible |= !canHideNavigationBar();
 
             boolean updateSysUiVisibility = false;
             if (mNavigationBar != null) {
@@ -2858,7 +2874,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     int top = displayHeight - overscanBottom
                             - mNavigationBarHeightForRotation[displayRotation];
                     mTmpNavigationFrame.set(0, top, displayWidth, displayHeight - overscanBottom);
-                    mStableBottom = mStableFullscreenBottom = mTmpNavigationFrame.top;
+                    if (immersiveModeHidesNavigationBar()) {
+                        mStableBottom = mStableFullscreenBottom = displayHeight - overscanBottom;
+                    } else {
+                        mStableBottom = mStableFullscreenBottom = mTmpNavigationFrame.top;
+                    }
                     if (transientNavBarShowing) {
                         mNavigationBarController.setBarShowingLw(true);
                     } else if (navVisible) {
@@ -2939,7 +2959,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 mStatusBar.computeFrameLw(pf, df, vf, vf, vf, dcf);
 
                 // For layout, the status bar is always at the top with our fixed height.
-                mStableTop = mUnrestrictedScreenTop + mStatusBarHeight;
+                mStableTop = mUnrestrictedScreenTop;
+                if (!immersiveModeHidesStatusBar()) mStableTop += mStatusBarHeight;
 
                 boolean statusBarTransient = (sysui & View.STATUS_BAR_TRANSIENT) != 0;
                 boolean statusBarTranslucent = (sysui & View.STATUS_BAR_TRANSLUCENT) != 0;
@@ -3129,7 +3150,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             dcf.right = mSystemRight;
             dcf.bottom = mSystemBottom;
             final boolean inheritTranslucentDecor = (attrs.privateFlags
-                    & WindowManager.LayoutParams.PRIVATE_FLAG_INHERIT_TRANSLUCENT_DECOR) != 0;
+                    & WindowManager.LayoutParams.PRIVATE_FLAG_INHERIT_TRANSLUCENT_DECOR) != 0
+        || immersiveModeHidesNavigationBar();
             final boolean isAppWindow =
                     attrs.type >= WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW &&
                     attrs.type <= WindowManager.LayoutParams.LAST_APPLICATION_WINDOW;
@@ -3606,10 +3628,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     if (mStatusBarController.setBarShowingLw(true)) {
                         changes |= FINISH_LAYOUT_REDO_LAYOUT;
                     }
-                } else if (topIsFullscreen || (Settings.System.getInt(mContext.getContentResolver(),
-                                        Settings.System.EXPANDED_DESKTOP_STATE, 0) == 1 &&
-                                        Settings.System.getInt(mContext.getContentResolver(),
-                                        Settings.System.EXPANDED_DESKTOP_STYLE, 0) == 2)) {
+                } else if (topIsFullscreen) {
                     if (DEBUG_LAYOUT) Slog.v(TAG, "** HIDING status bar");
                     if (mStatusBarController.setBarShowingLw(false)) {
                         changes |= FINISH_LAYOUT_REDO_LAYOUT;
@@ -5314,6 +5333,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         WindowState transWin = mKeyguard != null && mKeyguard.isVisibleLw() && !mHideLockScreen
                 ? mKeyguard
                 : mTopFullscreenOpaqueWindowState;
+		vis = updateImmersiveModeVisibility(vis);		
         vis = mStatusBarController.applyTranslucentFlagLw(transWin, vis, oldVis);
         vis = mNavigationBarController.applyTranslucentFlagLw(transWin, vis, oldVis);
 
@@ -5336,14 +5356,18 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         // update status bar
         boolean immersiveSticky =
                 (vis & View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) != 0;
+				
         boolean hideStatusBarWM =
-                mTopFullscreenOpaqueWindowState != null &&
+                (mTopFullscreenOpaqueWindowState != null &&
                 (mTopFullscreenOpaqueWindowState.getAttrs().flags
-                        & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0;
+                        & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0)
+                || immersiveModeHidesStatusBar();
         boolean hideStatusBarSysui =
-                (vis & View.SYSTEM_UI_FLAG_FULLSCREEN) != 0;
+                (vis & View.SYSTEM_UI_FLAG_FULLSCREEN) != 0 ||
+                immersiveModeHidesStatusBar();
         boolean hideNavBarSysui =
-                (vis & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0;
+                (vis & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0 ||
+                immersiveModeHidesNavigationBar();
 
         boolean transientStatusBarAllowed =
                 mStatusBar != null && (
@@ -5370,7 +5394,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         boolean oldImmersiveMode = isImmersiveMode(oldVis);
         boolean newImmersiveMode = isImmersiveMode(vis);
         if (win != null && oldImmersiveMode != newImmersiveMode) {
-            final String pkg = win.getOwningPackage();
+            final String pkg = immersiveModeHidesNavigationBar()
+                    ? "android" : win.getOwningPackage();
             mImmersiveModeConfirmation.immersiveModeChanged(pkg, newImmersiveMode);
         }
 
@@ -5621,5 +5646,25 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         pw.print(prefix); pw.print("mUndockedHdmiRotation="); pw.println(mUndockedHdmiRotation);
         mStatusBarController.dump(pw, prefix);
         mNavigationBarController.dump(pw, prefix);
+    }
+
+		private boolean immersiveModeHidesStatusBar() {
+        return mGlobalImmersiveModeStyle == 2;
+    }
+
+    private boolean immersiveModeHidesNavigationBar() {
+        return mGlobalImmersiveModeStyle != 0;
+    }
+
+    private int updateImmersiveModeVisibility(int vis) {
+        if (immersiveModeHidesStatusBar()) {
+            vis |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+        }
+
+        if (immersiveModeHidesNavigationBar()) {
+            vis |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+        }
+
+        return vis;
     }
 }
