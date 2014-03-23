@@ -407,7 +407,8 @@ public class VolumePanel extends Handler implements OnSeekBarChangeListener, Vie
                 mMoreButton.setVisibility(View.VISIBLE);
                 mDivider.setVisibility(View.VISIBLE);
                 mShowCombinedVolumes = true;
-                if (mCurrentOverlayStyle != -1) {
+                if (mCurrentOverlayStyle == VOLUME_OVERLAY_NONE
+                        || mCurrentOverlayStyle == VOLUME_OVERLAY_SINGLE) {
                     reorderSliders(mActiveStreamType);
                 }
                 mCurrentOverlayStyle = VOLUME_OVERLAY_EXPANDABLE;
@@ -416,7 +417,8 @@ public class VolumePanel extends Handler implements OnSeekBarChangeListener, Vie
                 mMoreButton.setVisibility(View.GONE);
                 mDivider.setVisibility(View.GONE);
                 mShowCombinedVolumes = true;
-                if (mCurrentOverlayStyle != -1) {
+                if (mCurrentOverlayStyle == VOLUME_OVERLAY_NONE
+                        || mCurrentOverlayStyle == VOLUME_OVERLAY_SINGLE) {
                     reorderSliders(mActiveStreamType);
                     expand();
                 }
