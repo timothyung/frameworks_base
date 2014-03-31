@@ -376,13 +376,12 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
         // next: global immersive mode toggle
         // only shown if enabled and global immersive mode is enabled, disabled by default
-        boolean showGlobalImmersiveMode =
+        Integer showGlobalImmersiveMode =Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.POWER_MENU_GLOBAL_IMMERSIVE_MODE_ENABLED, 2);
+        boolean ImmersiveModeEnabled =
                 Settings.System.getIntForUser(cr,
-                        Settings.System.GLOBAL_IMMERSIVE_MODE_STYLE, 0, UserHandle.USER_CURRENT) != 0
-                && Settings.System.getIntForUser(cr,
-                        Settings.System.POWER_MENU_GLOBAL_IMMERSIVE_MODE_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
-
-        if (showGlobalImmersiveMode) {
+                        Settings.System.GLOBAL_IMMERSIVE_MODE_STYLE, 0, UserHandle.USER_CURRENT) != 0;
+        if (((showGlobalImmersiveMode ==2) || (showGlobalImmersiveMode == 1 && mKeyguardShowing == false)) && ImmersiveModeEnabled)  {
             mItems.add(mGlobalImmersiveModeOn);
         }
 
